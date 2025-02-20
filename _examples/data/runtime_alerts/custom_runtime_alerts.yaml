@@ -1,0 +1,16 @@
+common_labels:
+  - name: controller
+    value: example-operator
+  - name: source
+    value: runtime
+
+alerts:
+  - alert: CustomRuntimeAlertForIncident
+    expr: custom_runtime_alert_for_incident > 0
+    for: 5m
+    annotations:
+      summary: Custom Runtime Alert For Incident
+      description: This alert is triggered when a custom runtime alert for incident is detected.
+      runbook_url: https://customer.com/runbooks/CustomRuntimeAlertForIncident
+    labels:
+      severity: critical

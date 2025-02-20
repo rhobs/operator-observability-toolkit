@@ -25,12 +25,23 @@ var (
 	}
 )
 
-func SetupRules() {
+func SetupRules(alertConfigFiles []string) {
+	// Register the recording rules
 	err := operatorRegistry.RegisterRecordingRules(recordingRules...)
 	if err != nil {
 		panic(err)
 	}
 
+	// Load additional alerts from files if provided
+	for _, alertConfigFile := range alertConfigFiles {
+		runtimeAlerts, err := operatorrules.LoadAlertFile(alertConfigFile)
+		if err != nil {
+			panic(err)
+		}
+		alerts = append(alerts, runtimeAlerts)
+	}
+
+	// Register the alerts
 	err = operatorRegistry.RegisterAlerts(alerts...)
 	if err != nil {
 		panic(err)

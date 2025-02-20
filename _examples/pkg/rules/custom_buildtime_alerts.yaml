@@ -1,0 +1,19 @@
+# alerts in *_alerts.yaml files will be automatically registered in the next
+# operatorRegistry.RegisterAlerts(<_any_other_alerts>) call
+
+common_labels:
+  - name: controller
+    value: example-operator
+  - name: source
+    value: buildtime
+
+alerts:
+  - alert: CustomBuildTimeAlertForIncident
+    expr: custom_build_time_alert_for_incident > 0
+    for: 5m
+    annotations:
+      summary: Custom Build Time Alert For Incident
+      description: This alert is triggered when a custom build time alert for incident is detected.
+      runbook_url: https://customer.com/runbooks/CustomBuildTimeAlertForIncident
+    labels:
+      severity: critical

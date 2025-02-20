@@ -33,6 +33,12 @@ func (r *Registry) RegisterRecordingRules(recordingRules ...[]RecordingRule) err
 
 // RegisterAlerts registers the given alerts.
 func (r *Registry) RegisterAlerts(alerts ...[]promv1.Rule) error {
+	declarativeAlerts, err := LoadDeclarativeAlerts()
+	if err != nil {
+		return err
+	}
+	alerts = append(alerts, declarativeAlerts)
+
 	for _, alertList := range alerts {
 		for _, alert := range alertList {
 			key := alert.Alert + ":" + alert.Expr.String()
