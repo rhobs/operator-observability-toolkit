@@ -4,8 +4,8 @@ import (
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/machadovilaca/operator-observability/pkg/operatormetrics"
-	"github.com/machadovilaca/operator-observability/pkg/operatorrules"
+	"github.com/rhobs/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability/pkg/operatorrules"
 )
 
 type Config struct {

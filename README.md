@@ -16,10 +16,6 @@ Empower Kubernetes Operator developers with tools that align with the
 Explore the [examples](_examples) directory for hands-on guidance on leveraging
 these utilities and wrappers.
 
-Or check the step-by-step tutorial on how to use this package to instrument a
-simple operator-sdk operator:
-https://github.com/machadovilaca/operator-observability-tutorial.
-
 ## Design
 
 ### Metrics

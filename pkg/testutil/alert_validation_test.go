@@ -7,7 +7,7 @@ import (
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/machadovilaca/operator-observability/pkg/testutil"
+	"github.com/rhobs/operator-observability/pkg/testutil"
 )
 
 var _ = Describe("Default Validators", func() {

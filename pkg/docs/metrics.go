@@ -7,8 +7,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/machadovilaca/operator-observability/pkg/operatormetrics"
-	"github.com/machadovilaca/operator-observability/pkg/operatorrules"
+	"github.com/rhobs/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability/pkg/operatorrules"
 )
 
 const defaultMetricsTemplate = `# Operator Metrics
