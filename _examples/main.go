@@ -7,7 +7,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/machadovilaca/operator-observability/examples/metrics"
+	"github.com/rhobs/operator-observability/examples/metrics"
 )
 
 func main() {

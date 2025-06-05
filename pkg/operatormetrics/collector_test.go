@@ -10,7 +10,7 @@ import (
 	io_prometheus_client "github.com/prometheus/client_model/go"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/machadovilaca/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability/pkg/operatormetrics"
 )
 
 var _ = Describe("Collector", func() {

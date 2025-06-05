@@ -13,7 +13,7 @@ goclean:
 
 goimport:
 	go install golang.org/x/tools/cmd/goimports@latest
-	goimports -w -local="github.com/machadovilaca/operator-observability"  $(shell find . -type f -name '*.go' ! -path "*/vendor/*" )
+	goimports -w -local="github.com/rhobs/operator-observability"  $(shell find . -type f -name '*.go' ! -path "*/vendor/*" )
 
 test:
 	go test -v ./pkg/...

@@ -5,8 +5,8 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/machadovilaca/operator-observability/pkg/operatormetrics"
-	"github.com/machadovilaca/operator-observability/pkg/operatorrules"
+	"github.com/rhobs/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability/pkg/operatorrules"
 )
 
 var operatorRecordingRules = []operatorrules.RecordingRule{
