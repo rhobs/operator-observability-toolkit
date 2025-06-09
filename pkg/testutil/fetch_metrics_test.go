@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 
-	"github.com/rhobs/operator-observability/pkg/testutil"
+	"github.com/rhobs/operator-observability-toolkit/pkg/testutil"
 )
 
 //go:embed testdata/metrics.txt

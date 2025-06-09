@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/rhobs/operator-observability/examples/metrics"
-	"github.com/rhobs/operator-observability/examples/rules"
-	"github.com/rhobs/operator-observability/pkg/docs"
+	"github.com/rhobs/operator-observability-toolkit/examples/metrics"
+	"github.com/rhobs/operator-observability-toolkit/examples/rules"
+	"github.com/rhobs/operator-observability-toolkit/pkg/docs"
 )
 
 const tpl = `# Guestbook Operator Metrics

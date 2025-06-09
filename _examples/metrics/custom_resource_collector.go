@@ -6,7 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/rhobs/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatormetrics"
 )
 
 var (

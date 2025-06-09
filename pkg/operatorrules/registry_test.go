@@ -8,8 +8,8 @@ import (
 
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 
-	"github.com/rhobs/operator-observability/pkg/operatormetrics"
-	"github.com/rhobs/operator-observability/pkg/operatorrules"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatorrules"
 )
 
 var _ = Describe("OperatorRules", func() {

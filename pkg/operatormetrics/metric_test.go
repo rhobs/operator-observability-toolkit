@@ -7,7 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	io_prometheus_client "github.com/prometheus/client_model/go"
 
-	"github.com/rhobs/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatormetrics"
 )
 
 var _ = Describe("Metrics", func() {

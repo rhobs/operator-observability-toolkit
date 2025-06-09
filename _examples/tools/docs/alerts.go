@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/rhobs/operator-observability/examples/rules"
-	"github.com/rhobs/operator-observability/pkg/docs"
+	"github.com/rhobs/operator-observability-toolkit/examples/rules"
+	"github.com/rhobs/operator-observability-toolkit/pkg/docs"
 )
 
 func main() {

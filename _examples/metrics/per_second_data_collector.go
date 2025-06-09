@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rhobs/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatormetrics"
 )
 
 var (

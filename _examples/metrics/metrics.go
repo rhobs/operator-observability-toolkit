@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"github.com/rhobs/operator-observability/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatormetrics"
 )
 
 const metricPrefix = "guestbook_operator_"

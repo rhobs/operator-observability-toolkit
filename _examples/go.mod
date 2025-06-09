@@ -1,9 +1,9 @@
-module github.com/rhobs/operator-observability/examples
+module github.com/rhobs/operator-observability-toolkit/examples
 
 go 1.21
 
 require (
-	github.com/rhobs/operator-observability v0.0.0-00010101000000-000000000000
+	github.com/rhobs/operator-observability-toolkit v0.0.0-00010101000000-000000000000
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.68.0
 	github.com/prometheus/client_golang v1.16.0
 	k8s.io/apimachinery v0.28.1
@@ -59,4 +59,4 @@ require (
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
-replace github.com/rhobs/operator-observability => ../
+replace github.com/rhobs/operator-observability-toolkit => ../
