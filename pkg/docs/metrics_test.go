@@ -8,9 +8,9 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/rhobs/operator-observability/pkg/docs"
-	"github.com/rhobs/operator-observability/pkg/operatormetrics"
-	"github.com/rhobs/operator-observability/pkg/operatorrules"
+	"github.com/rhobs/operator-observability-toolkit/pkg/docs"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatormetrics"
+	"github.com/rhobs/operator-observability-toolkit/pkg/operatorrules"
 )
 
 const tpl = `#metrics-doc-test-title

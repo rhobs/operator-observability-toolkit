@@ -1,4 +1,4 @@
-module github.com/rhobs/operator-observability
+module github.com/rhobs/operator-observability-toolkit
 
 go 1.21
 
