@@ -25,4 +25,5 @@ lint:
 check-diff:
 	git difftool -y --trust-exit-code
 
-.PHONY: all sanity goclean goimport test lint check-diff
+e2e-functional:
+	go test -v ./e2e/functional
