@@ -13,8 +13,8 @@ import (
 	"github.com/rhobs/operator-observability-toolkit/pkg/operatorrules"
 )
 
-const tpl = `#metrics-doc-test-title
-{{- range . }}
+const tpl = `{{.Title}}
+{{- range .Metrics }}
 
 {{ $deprecatedVersion := "" -}}
 {{- with index .ExtraFields "DeprecatedVersion" -}}
@@ -27,7 +27,7 @@ const tpl = `#metrics-doc-test-title
 {{- end -}}
 
 ### {{ .Name }}
-{{ print $stabilityLevel }}{{ .Help }}. Type: {{ .Type -}}.
+{{ print $stabilityLevel }}{{ .Description }}. Type: {{ .Type -}}.
 
 {{- end }}
 
@@ -68,7 +68,7 @@ var metrics = []operatormetrics.Metric{
 var _ = Describe("Metrics Documentation", func() {
 	Context("Metrics and Recording Rules", func() {
 		It("Checks that metrics and recording rules are documented", func() {
-			docMetrics := docs.BuildMetricsDocs(metrics, recordingRules)
+			docMetrics := docs.BuildMetricsDocs("Test Metrics", metrics, recordingRules)
 			Expect(docMetrics).To(ContainSubstring("CExampleRecordingRule"))
 			Expect(docMetrics).To(ContainSubstring("AExampleRecordingRule"))
 			Expect(docMetrics).To(ContainSubstring("BExampleGauge"))
@@ -76,8 +76,8 @@ var _ = Describe("Metrics Documentation", func() {
 		})
 
 		It("Checks that metrics and recording rules are documented with custom template", func() {
-			templateDocMetrics := docs.BuildMetricsDocsWithCustomTemplate(metrics, recordingRules, tpl)
-			Expect(templateDocMetrics).To(ContainSubstring("metrics-doc-test-title"))
+			templateDocMetrics := docs.BuildMetricsDocsWithCustomTemplate("Test Metrics", metrics, recordingRules, tpl)
+			Expect(templateDocMetrics).To(ContainSubstring("Test Metrics"))
 			Expect(templateDocMetrics).To(ContainSubstring("metrics-doc-test-body"))
 			Expect(templateDocMetrics).To(ContainSubstring("CExampleRecordingRule"))
 			Expect(templateDocMetrics).To(ContainSubstring("AExampleRecordingRule"))
@@ -86,21 +86,26 @@ var _ = Describe("Metrics Documentation", func() {
 		})
 
 		It("Checks that the metrics doc is sorted by metrics and recording rules name", func() {
-			templateDocMetrics := docs.BuildMetricsDocsWithCustomTemplate(metrics, recordingRules, tpl)
+			templateDocMetrics := docs.BuildMetricsDocsWithCustomTemplate("Test Metrics", metrics, recordingRules, tpl)
 			indexOfA := strings.Index(templateDocMetrics, "AExampleRecordingRule")
 			indexOfB := strings.Index(templateDocMetrics, "BExampleGauge")
 			indexOfC := strings.Index(templateDocMetrics, "CExampleRecordingRule")
 			indexOfD := strings.Index(templateDocMetrics, "DExampleCounterVec")
 
-			Expect(indexOfA).To(BeNumerically("<", indexOfB))
-			Expect(indexOfB).To(BeNumerically("<", indexOfC))
-			Expect(indexOfC).To(BeNumerically("<", indexOfD))
+			Expect(indexOfB).To(BeNumerically("<", indexOfD))
+			Expect(indexOfD).To(BeNumerically("<", indexOfA))
+			Expect(indexOfA).To(BeNumerically("<", indexOfC))
 		})
 
 		It("Checks that metrics are documented in the right format", func() {
-			templateDocMetrics := docs.BuildMetricsDocsWithCustomTemplate(metrics, nil, tpl)
+			templateDocMetrics := docs.BuildMetricsDocsWithCustomTemplate("Test Metrics", metrics, nil, tpl)
 			Expect(templateDocMetrics).To(ContainSubstring("BExampleGauge\ntest doc gauge. Type: Gauge."))
 			Expect(templateDocMetrics).To(ContainSubstring("[ALPHA in 1.4.0] test doc counterVec. Type: Counter."))
+		})
+
+		It("Checks that extra fields are included in Description column of default template", func() {
+			docMetrics := docs.BuildMetricsDocs("Test Metrics", metrics, nil)
+			Expect(docMetrics).To(ContainSubstring("| DExampleCounterVec | Metric | Counter | [ALPHA in 1.4.0] test doc counterVec |"))
 		})
 	})
 })
