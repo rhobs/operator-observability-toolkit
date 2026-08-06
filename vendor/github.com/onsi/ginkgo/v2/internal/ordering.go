@@ -27,36 +27,43 @@ func (s *SortableSpecs) Swap(i, j int) { s.Indexes[i], s.Indexes[j] = s.Indexes[
 func (s *SortableSpecs) Less(i, j int) bool {
 	a, b := s.Specs[s.Indexes[i]], s.Specs[s.Indexes[j]]
 
-	firstOrderedA := a.Nodes.FirstNodeMarkedOrdered()
-	firstOrderedB := b.Nodes.FirstNodeMarkedOrdered()
-	if firstOrderedA.ID == firstOrderedB.ID && !firstOrderedA.IsZero() {
-		// strictly preserve order in ordered containers.  ID will track this as IDs are generated monotonically
-		return a.FirstNodeWithType(types.NodeTypeIt).ID < b.FirstNodeWithType(types.NodeTypeIt).ID
+	aNodes, bNodes := a.Nodes.WithType(types.NodeTypesForContainerAndIt), b.Nodes.WithType(types.NodeTypesForContainerAndIt)
+
+	firstOrderedAIdx, firstOrderedBIdx := aNodes.IndexOfFirstNodeMarkedOrdered(), bNodes.IndexOfFirstNodeMarkedOrdered()
+	if firstOrderedAIdx > -1 && firstOrderedBIdx > -1 && aNodes[firstOrderedAIdx].ID == bNodes[firstOrderedBIdx].ID {
+		// strictly preserve order within an ordered containers.  ID will track this as IDs are generated monotonically
+		return aNodes.FirstNodeWithType(types.NodeTypeIt).ID < bNodes.FirstNodeWithType(types.NodeTypeIt).ID
 	}
 
-	aCLs := a.Nodes.WithType(types.NodeTypesForContainerAndIt).CodeLocations()
-	bCLs := b.Nodes.WithType(types.NodeTypesForContainerAndIt).CodeLocations()
-	for i := 0; i < len(aCLs) && i < len(bCLs); i++ {
-		aCL, bCL := aCLs[i], bCLs[i]
-		if aCL.FileName < bCL.FileName {
-			return true
-		} else if aCL.FileName > bCL.FileName {
-			return false
+	// if either spec is in an ordered container - only use the nodes up to the outermost ordered container
+	if firstOrderedAIdx > -1 {
+		aNodes = aNodes[:firstOrderedAIdx+1]
+	}
+	if firstOrderedBIdx > -1 {
+		bNodes = bNodes[:firstOrderedBIdx+1]
+	}
+
+	for i := 0; i < len(aNodes) && i < len(bNodes); i++ {
+		aCL, bCL := aNodes[i].CodeLocation, bNodes[i].CodeLocation
+		if aCL.FileName != bCL.FileName {
+			return aCL.FileName < bCL.FileName
 		}
-		if aCL.LineNumber < bCL.LineNumber {
-			return true
-		} else if aCL.LineNumber > bCL.LineNumber {
-			return false
+		if aCL.LineNumber != bCL.LineNumber {
+			return aCL.LineNumber < bCL.LineNumber
 		}
 	}
 	// either everything is equal or we have different lengths of CLs
-	if len(aCLs) < len(bCLs) {
-		return true
-	} else if len(aCLs) > len(bCLs) {
-		return false
+	if len(aNodes) != len(bNodes) {
+		return len(aNodes) < len(bNodes)
 	}
 	// ok, now we are sure everything was equal. so we use the spec text to break ties
-	return a.Text() < b.Text()
+	for i := 0; i < len(aNodes); i++ {
+		if aNodes[i].Text != bNodes[i].Text {
+			return aNodes[i].Text < bNodes[i].Text
+		}
+	}
+	// ok, all those texts were equal.  we'll use the ID of the most deeply nested node as a last resort
+	return aNodes[len(aNodes)-1].ID < bNodes[len(bNodes)-1].ID
 }
 
 type GroupedSpecIndices []SpecIndices
@@ -118,7 +125,7 @@ func OrderSpecs(specs Specs, suiteConfig types.SuiteConfig) (GroupedSpecIndices,
 		// pick out a representative spec
 		representativeSpec := specs[executionGroups[groupID][0]]
 
-		// and grab the node on the spec that will represent which shufflable group this execution group belongs tu
+		// and grab the node on the spec that will represent which shufflable group this execution group belongs to
 		shufflableGroupingNode := representativeSpec.Nodes.FirstNodeWithType(nodeTypesToShuffle)
 
 		//add the execution group to its shufflable group
@@ -131,14 +138,35 @@ func OrderSpecs(specs Specs, suiteConfig types.SuiteConfig) (GroupedSpecIndices,
 		}
 	}
 
+	// now, for each shuffleable group, we compute the priority
+	shufflableGroupingIDPriorities := map[uint]int{}
+	for shufflableGroupingID, groupIDs := range shufflableGroupingIDToGroupIDs {
+		// the priority of a shufflable grouping is the max priority of any spec in any execution group in the shufflable grouping
+		maxPriority := -1 << 31 // min int
+		for _, groupID := range groupIDs {
+			for _, specIdx := range executionGroups[groupID] {
+				specPriority := specs[specIdx].Nodes.GetSpecPriority()
+				maxPriority = max(specPriority, maxPriority)
+			}
+		}
+		shufflableGroupingIDPriorities[shufflableGroupingID] = maxPriority
+	}
+
 	// now we permute the sorted shufflable grouping IDs and build the ordered Groups
-	orderedGroups := GroupedSpecIndices{}
 	permutation := r.Perm(len(shufflableGroupingIDs))
-	for _, j := range permutation {
-		//let's get the execution group IDs for this shufflable group:
-		executionGroupIDsForJ := shufflableGroupingIDToGroupIDs[shufflableGroupingIDs[j]]
-		// and we'll add their associated specindices to the orderedGroups slice:
-		for _, executionGroupID := range executionGroupIDsForJ {
+	shuffledGroupingIds := make([]uint, len(shufflableGroupingIDs))
+	for i, j := range permutation {
+		shuffledGroupingIds[i] = shufflableGroupingIDs[j]
+	}
+	// now, we need to stable sort the shuffledGroupingIds by priority (higher priority first)
+	sort.SliceStable(shuffledGroupingIds, func(i, j int) bool {
+		return shufflableGroupingIDPriorities[shuffledGroupingIds[i]] > shufflableGroupingIDPriorities[shuffledGroupingIds[j]]
+	})
+
+	// we can now take these prioritized, shuffled, groupings and form the final set of ordered spec groups
+	orderedGroups := GroupedSpecIndices{}
+	for _, id := range shuffledGroupingIds {
+		for _, executionGroupID := range shufflableGroupingIDToGroupIDs[id] {
 			orderedGroups = append(orderedGroups, executionGroups[executionGroupID])
 		}
 	}
