@@ -295,6 +295,7 @@ func main() {
 
 - Alert and Recording Rules validation: [docs/AlertsAndRecordingRulesValidation.md](docs/AlertsAndRecordingRulesValidation.md)
 - Use a Different Registry for metrics and collectors: [docs/UseDifferentRegistry.md](docs/UseDifferentRegistry.md)
+- Rule unit testing in Go: [docs/RuleUnitTesting.md](docs/RuleUnitTesting.md)
 
 ## Next Steps
 

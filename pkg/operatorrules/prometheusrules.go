@@ -31,6 +31,12 @@ func (r *Registry) BuildPrometheusRule(name, namespace string, labels map[string
 	}, nil
 }
 
+// BuildPrometheusRuleSpec builds a PrometheusRuleSpec from the registered
+// recording rules and alerts.
+func (r *Registry) BuildPrometheusRuleSpec() (*promv1.PrometheusRuleSpec, error) {
+	return r.buildPrometheusRuleSpec()
+}
+
 func (r *Registry) buildPrometheusRuleSpec() (*promv1.PrometheusRuleSpec, error) {
 	var groups []promv1.RuleGroup
 

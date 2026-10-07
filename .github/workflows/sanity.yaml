@@ -25,6 +25,9 @@ jobs:
       - name: Do sanity checks
         run: make sanity
 
+      - name: Run rule unit tests
+        run: make test-rules
+
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@d583c34f0599d37dbac4a198b9c83201be380893 # v9.3.0
         with:

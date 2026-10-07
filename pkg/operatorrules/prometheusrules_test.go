@@ -145,4 +145,36 @@ var _ = Describe("PrometheusRules", func() {
 			Expect(rules.Spec.Groups[1].Rules[1].Alert).To(Equal("GuestbookOperatorDown"))
 		})
 	})
+
+	Context("BuildPrometheusRuleSpec", func() {
+		It("should build a spec from registered rules", func() {
+			registry := operatorrules.NewRegistry()
+
+			err := registry.RegisterRecordingRules([]operatorrules.RecordingRule{{
+				MetricsOpts: operatormetrics.MetricOpts{Name: "example_recording_rule"},
+				Expr:        intstr.FromString("sum(rate(http_requests_total[5m]))"),
+			}})
+			Expect(err).ToNot(HaveOccurred())
+
+			err = registry.RegisterAlerts([]promv1.Rule{{
+				Alert: "ExampleAlert",
+				Expr:  intstr.FromString("example_recording_rule > 0"),
+			}})
+			Expect(err).ToNot(HaveOccurred())
+
+			spec, err := registry.BuildPrometheusRuleSpec()
+			Expect(err).ToNot(HaveOccurred())
+			Expect(spec.Groups).To(HaveLen(2))
+			Expect(spec.Groups[0].Name).To(Equal("recordingRules.rules"))
+			Expect(spec.Groups[1].Name).To(Equal("alerts.rules"))
+		})
+
+		It("should return an error when no rules are registered", func() {
+			registry := operatorrules.NewRegistry()
+
+			spec, err := registry.BuildPrometheusRuleSpec()
+			Expect(err).To(HaveOccurred())
+			Expect(spec).To(BeNil())
+		})
+	})
 })
